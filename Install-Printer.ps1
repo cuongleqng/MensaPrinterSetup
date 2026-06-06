@@ -45,7 +45,7 @@ switch ($Choice)
     {
         $PrinterIP   = "PRT-TED-003"
         $PrinterName = "Xerox C8145 - MSA Office"
-        $DriverName = "Xerox Universal PS3"
+        $DriverName = "Xerox Global Print Driver PS"
         $DriverZipUrl = "$GithubRepo/Drivers/Xerox_Global_Print_Driver_PS_C8_$Architecture.zip"
         $ConfigUrl = "$GithubRepo/Config/Xerox_DefaultBlackWhite_C8_PS_$Architecture.dat"
     }
@@ -63,7 +63,7 @@ switch ($Choice)
     {
         $PrinterIP   = "PRT-TED-005"
         $PrinterName = "Fuji C7071 - MSA Office"
-        $DriverName  = "Fuji Apeos C7071"
+        $DriverName  = "FF Apeos C7071 PCL 6"
         $DriverZipUrl = "$GithubRepo/Drivers/Fuji_Driver_PCL_C7071_$Architecture.zip"
         $ConfigUrl = "$GithubRepo/Config/Fuji_C7071_PCL_$Architecture.dat"
     }
