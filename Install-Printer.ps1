@@ -8,8 +8,7 @@ else
     $Architecture = "x86"
 }
 $DriverName = "TOSHIBA Universal PS3"
-$DriverZipUrl = "$GithubRepo/Drivers/TOSHIBA_Universal_PS3_$Architecture.zip"
-$ConfigUrl = "$GithubRepo/Config/TOSHIBA_e-STUDIO_6506AC_PS3_$Architecture.dat"
+
 Write-Host "$GithubRepo/Drivers/TOSHIBA_Universal_PS3_$Architecture.zip"
 Write-Host ""
 Write-Host "Detected Operating System : $Architecture" -ForegroundColor Green
@@ -46,36 +45,54 @@ switch ($Choice)
     {
         $PrinterIP   = "PRT-TED-003"
         $PrinterName = "Xerox C8145 - MSA Office"
+        $DriverName = "Xerox Universal PS3"
+        $DriverZipUrl = "$GithubRepo/Drivers/Xerox_Global_Print_Driver_PS_C8_$Architecture.zip"
+        $ConfigUrl = "$GithubRepo/Config/Xerox_DefaultBlackWhite_C8_PS_$Architecture.dat"
     }
 
     "2"
     {
         $PrinterIP   = "PRT-TED-004"
         $PrinterName = "Toshiba 6506 - MSA Beta"
+        $DriverName = "TOSHIBA Universal PS3"
+        $DriverZipUrl = "$GithubRepo/Drivers/TOSHIBA_Universal_PS3_$Architecture.zip"
+        $ConfigUrl = "$GithubRepo/Config/TOSHIBA_e-STUDIO_6506AC_PS3_$Architecture.dat"
     }
 
     "3"
     {
         $PrinterIP   = "PRT-TED-005"
         $PrinterName = "Fuji C7071 - MSA Office"
+        $DriverName  = "Fuji Apeos C7071"
+        $DriverZipUrl = "$GithubRepo/Drivers/Fuji_Driver_PCL_C7071_$Architecture.zip"
+        $ConfigUrl = "$GithubRepo/Config/Fuji_C7071_PCL_$Architecture.dat"
     }
 
     "4"
     {
         $PrinterIP   = "PRT-TED-006"
         $PrinterName = "Toshiba 6506 - MSA Alpha"
+        $DriverName = "TOSHIBA Universal PS3"
+        $DriverZipUrl = "$GithubRepo/Drivers/TOSHIBA_Universal_PS3_$Architecture.zip"
+        $ConfigUrl = "$GithubRepo/Config/TOSHIBA_e-STUDIO_6506AC_PS3_$Architecture.dat"
     }
 
     "5"
     {
         $PrinterIP   = "PRT-TED-007"
         $PrinterName = "Toshiba 6506 - MSA Warehouse"
+        $DriverName = "TOSHIBA Universal PS3"
+        $DriverZipUrl = "$GithubRepo/Drivers/TOSHIBA_Universal_PS3_$Architecture.zip"
+        $ConfigUrl = "$GithubRepo/Config/TOSHIBA_e-STUDIO_6506AC_PS3_$Architecture.dat"
     }
 
     "6"
     {
         $PrinterIP   = "PRT-TED-008"
         $PrinterName = "Toshiba 6506 - MSA Beta Office"
+        $DriverName = "TOSHIBA Universal PS3"
+        $DriverZipUrl = "$GithubRepo/Drivers/TOSHIBA_Universal_PS3_$Architecture.zip"
+        $ConfigUrl = "$GithubRepo/Config/TOSHIBA_e-STUDIO_6506AC_PS3_$Architecture.dat"
     }
 
     default
