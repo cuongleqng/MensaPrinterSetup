@@ -81,7 +81,11 @@ $PrinterName = "TOSHIBA_$Random"
 
 Add-Printer -Name $PrinterName -DriverName $DriverName -PortName $PortName
 
-Start-Process rundll32.exe -ArgumentList "printui.dll,PrintUIEntry /Sr /n "$PrinterName" /a "$ConfigFile" f u g d p" -Wait -NoNewWindow
+Start-Process `
+    -FilePath "rundll32.exe" `
+    -ArgumentList "printui.dll,PrintUIEntry /Sr /n `"$PrinterName`" /a `"$ConfigFile`" f u g d p" `
+    -Wait `
+    -NoNewWindow
 
 $Rename = Read-Host "Ban co muon doi ten may in? (Y/N)"
 
