@@ -14,11 +14,83 @@ Write-Host "$GithubRepo/Drivers/TOSHIBA_Universal_PS3_$Architecture.zip"
 Write-Host ""
 Write-Host "Detected Operating System : $Architecture" -ForegroundColor Green
 
-do
+Write-Host ""
+Write-Host "========================================"
+Write-Host "      MSA Printer Installer"
+Write-Host "========================================"
+Write-Host ""
+Write-Host "1. Xerox C8145 - MSA Office"
+Write-Host "   PRT-TED-003 # 172.16.11.251"
+Write-Host ""
+Write-Host "2. Toshiba 6506 - MSA Beta"
+Write-Host "   PRT-TED-004 # 172.16.21.251"
+Write-Host ""
+Write-Host "3. Fuji C7071 - MSA Office"
+Write-Host "   PRT-TED-005 # 172.16.11.252"
+Write-Host ""
+Write-Host "4. Toshiba 6506 - MSA Alpha"
+Write-Host "   PRT-TED-006 # 172.16.31.251"
+Write-Host ""
+Write-Host "5. Toshiba 6506 - MSA Warehouse"
+Write-Host "   PRT-TED-007 # 172.16.41.251"
+Write-Host ""
+Write-Host "6. Toshiba 6506 - MSA Beta Office"
+Write-Host "   PRT-TED-008 # 172.16.21.252"
+Write-Host ""
+
+$Choice = Read-Host "Select a printer (1-6)"
+
+switch ($Choice)
 {
-    $PrinterIP = Read-Host "Nhap dia chi IP may photo"
+    "1"
+    {
+        $PrinterIP   = "PRT-TED-003"
+        $PrinterName = "Xerox C8145 - MSA Office"
+    }
+
+    "2"
+    {
+        $PrinterIP   = "PRT-TED-004"
+        $PrinterName = "Toshiba 6506 - MSA Beta"
+    }
+
+    "3"
+    {
+        $PrinterIP   = "PRT-TED-005"
+        $PrinterName = "Fuji C7071 - MSA Office"
+    }
+
+    "4"
+    {
+        $PrinterIP   = "PRT-TED-006"
+        $PrinterName = "Toshiba 6506 - MSA Alpha"
+    }
+
+    "5"
+    {
+        $PrinterIP   = "PRT-TED-007"
+        $PrinterName = "Toshiba 6506 - MSA Warehouse"
+    }
+
+    "6"
+    {
+        $PrinterIP   = "PRT-TED-008"
+        $PrinterName = "Toshiba 6506 - MSA Beta Office"
+    }
+
+    default
+    {
+        Write-Host ""
+        Write-Host "Invalid selection." -ForegroundColor Red
+        Pause
+        exit
+    }
 }
-until ($PrinterIP)
+
+Write-Host ""
+Write-Host "Printer Name : $PrinterName"
+Write-Host "Printer Host : $PrinterIP"
+Write-Host ""
 
 $TempFolder = Join-Path $env:TEMP "PrinterInstaller"
 
@@ -86,19 +158,6 @@ Start-Process `
     -ArgumentList "printui.dll,PrintUIEntry /Sr /n `"$PrinterName`" /a `"$ConfigFile`" f u g d p" `
     -Wait `
     -NoNewWindow
-
-$Rename = Read-Host "Ban co muon doi ten may in? (Y/N)"
-
-if ($Rename -match "^[Yy]$")
-{
-    $NewName = Read-Host "Nhap ten may in"
-
-    if ($NewName)
-    {
-        Rename-Printer -Name $PrinterName -NewName $NewName
-        $PrinterName = $NewName
-    }
-}
 
 rundll32 printui.dll,PrintUIEntry /Sr /n "$PrinterName" /a "$ConfigFile" f u g d p
 rundll32 printui.dll,PrintUIEntry /y /n "$PrinterName"
