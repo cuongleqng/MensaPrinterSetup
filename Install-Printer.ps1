@@ -1,119 +1,136 @@
-#Requires -RunAsAdministrator
+$GithubRepo = "https://github.com/<user>/<repo>/raw/main"
 
-$Repo = "https://raw.githubusercontent.com/<username>/<repo>/main"
-
-Write-Host ""
-Write-Host "======================================="
-Write-Host " Toshiba Online Printer Installer"
-Write-Host "======================================="
-Write-Host ""
-
-$PrinterIP = Read-Host "Nhap IP may photo"
-
-if ([string]::IsNullOrWhiteSpace($PrinterIP))
+if ([Environment]::Is64BitOperatingSystem)
 {
-    Write-Host "IP khong hop le."
-    exit
+    $Architecture = "x64"
+}
+else
+{
+    $Architecture = "x86"
 }
 
-$TempFolder = "$env:TEMP\PrinterInstall"
+$DriverName = "TOSHIBA Universal PS3"
+$DriverZipUrl = "$GithubRepo/Drivers/TOSHIBA_Universal_PS3_$Architecture.zip"
+$ConfigUrl = "$GithubRepo/Config/TOSHIBA_e-STUDIO_6506AC_PS3_$Architecture.dat"
 
-if(Test-Path $TempFolder)
+Write-Host ""
+Write-Host "Detected Operating System : $Architecture" -ForegroundColor Green
+
+do
+{
+    $PrinterIP = Read-Host "Nhap dia chi IP may photo"
+}
+until ($PrinterIP)
+
+$TempFolder = Join-Path $env:TEMP "PrinterInstaller"
+
+if (Test-Path $TempFolder)
 {
     Remove-Item $TempFolder -Recurse -Force
 }
 
 New-Item -ItemType Directory -Path $TempFolder | Out-Null
 
+$DriverZip = "$TempFolder\Driver.zip"
+$ConfigFile = "$TempFolder\Config.dat"
+
 Write-Host ""
-Write-Host "Downloading driver..."
+Write-Host "Downloading driver..." -ForegroundColor Yellow
 
-$DriverZip = "$TempFolder\driver.zip"
+Invoke-WebRequest `    -Uri $DriverZipUrl`
+-OutFile $DriverZip `
+-UseBasicParsing
 
-Invoke-WebRequest `
-    -Uri "https://github.com/<username>/<repo>/raw/main/Drivers/TOSHIBA_Universal_PS3.zip" `
-    -OutFile $DriverZip
+Write-Host "Extracting driver..." -ForegroundColor Yellow
 
-Expand-Archive `
-    -Path $DriverZip `
-    -DestinationPath "$TempFolder\Driver" `
-    -Force
+Expand-Archive `    -Path $DriverZip`
+-DestinationPath "$TempFolder\Driver" `
+-Force
 
-Write-Host "Download driver completed."
+Write-Host "Downloading configuration..." -ForegroundColor Yellow
 
-# Download config
-Invoke-WebRequest `
-    -Uri "https://github.com/<username>/<repo>/raw/main/Config/TOSHIBA_e-STUDIO_6506AC_PS3_x64.dat" `
-    -OutFile "$TempFolder\Config.dat"
+Invoke-WebRequest `    -Uri $ConfigUrl`
+-OutFile $ConfigFile `
+-UseBasicParsing
 
 $PortName = "IP_$PrinterIP"
 
-Write-Host ""
-Write-Host "Creating TCP/IP port..."
-
 if (-not (Get-PrinterPort -Name $PortName -ErrorAction SilentlyContinue))
 {
-    Add-PrinterPort `
-        -Name $PortName `
-        -PrinterHostAddress $PrinterIP
+    Add-PrinterPort `        -Name $PortName`
+    -PrinterHostAddress $PrinterIP
 }
 
-Write-Host "Port created."
+$InfFile = Get-ChildItem `    -Path "$TempFolder\Driver"`
+-Filter *.inf `
+-Recurse |
+Select-Object -First 1
 
-$DriverName = "TOSHIBA Universal PS3"
-
-Write-Host ""
-Write-Host "Installing driver..."
-
-$InfFile = Get-ChildItem `
-    "$TempFolder\Driver" `
-    -Filter *.inf `
-    -Recurse |
-    Select-Object -First 1
-
-pnputil /add-driver $InfFile.FullName /install
-
-Add-PrinterDriver -Name $DriverName
-
-Write-Host "Driver installed."
-
-$PrinterName = "TOSHIBA_$PrinterIP"
-
-Write-Host ""
-Write-Host "Creating printer..."
-
-if (-not (Get-Printer -Name $PrinterName -ErrorAction SilentlyContinue))
+if (-not $InfFile)
 {
-    Add-Printer `
-        -Name $PrinterName `
-        -DriverName $DriverName `
-        -PortName $PortName
+    Write-Host "INF file not found." -ForegroundColor Red
+    Pause
+    exit
 }
 
-Write-Host "Printer created."
+pnputil.exe /add-driver $InfFile.FullName /install
 
-Write-Host ""
-$Rename = Read-Host "Ban co muon dat ten khac? (Y/N)"
+Start-Sleep -Seconds 3
 
-if ($Rename -match '^[Yy]$')
+if (-not (Get-PrinterDriver -Name $DriverName -ErrorAction SilentlyContinue))
+{
+    try
+    {
+        Add-PrinterDriver -Name $DriverName
+    }
+    catch
+    {
+    }
+}
+
+$Random = Get-Random -Minimum 1000 -Maximum 9999
+$PrinterName = "TOSHIBA_$Random"
+
+Add-Printer `    -Name $PrinterName`
+-DriverName $DriverName `
+-PortName $PortName
+
+Start-Process `    rundll32.exe`
+-ArgumentList "printui.dll,PrintUIEntry /Sr /n `"$PrinterName`" /a `"$ConfigFile`" f u g d p" `    -Wait`
+-NoNewWindow
+
+$Rename = Read-Host "Ban co muon doi ten may in? (Y/N)"
+
+if ($Rename -match "^[Yy]$")
 {
     $NewName = Read-Host "Nhap ten may in"
 
-    Rename-Printer `
+    ```
+    if ($NewName)
+    {
+        Rename-Printer `
         -Name $PrinterName `
         -NewName $NewName
 
-    $PrinterName = $NewName
+        $PrinterName = $NewName
+    }
+    ```
+
 }
 
-Set-Printer `
-    -Name $PrinterName `
-    -IsDefault $true
+Start-Process `    rundll32.exe`
+-ArgumentList "printui.dll,PrintUIEntry /y /n `"$PrinterName`"" `    -Wait`
+-NoNewWindow
+
+Remove-Item `    $TempFolder`
+-Recurse `    -Force`
+-ErrorAction SilentlyContinue
 
 Write-Host ""
-Write-Host "======================================="
-Write-Host " Cai dat hoan tat"
-Write-Host " May in: $PrinterName"
-Write-Host " IP: $PrinterIP"
-Write-Host "======================================="
+Write-Host "Installation completed." -ForegroundColor Green
+Write-Host "Printer : $PrinterName"
+Write-Host "IP      : $PrinterIP"
+Write-Host "Driver  : $DriverName"
+Write-Host "OS      : $Architecture"
+
 Pause
