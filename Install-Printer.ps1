@@ -8,7 +8,6 @@ else
 {
     $Architecture = "x86"
 }
-
 $DriverName = "TOSHIBA Universal PS3"
 $DriverZipUrl = "$GithubRepo/Drivers/TOSHIBA_Universal_PS3_$Architecture.zip"
 $ConfigUrl = "$GithubRepo/Config/TOSHIBA_e-STUDIO_6506AC_PS3_$Architecture.dat"
