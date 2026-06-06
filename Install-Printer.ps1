@@ -10,7 +10,7 @@ else
 $DriverName = "TOSHIBA Universal PS3"
 $DriverZipUrl = "$GithubRepo/Drivers/TOSHIBA_Universal_PS3_$Architecture.zip"
 $ConfigUrl = "$GithubRepo/Config/TOSHIBA_e-STUDIO_6506AC_PS3_$Architecture.dat"
-
+Write-Host "$GithubRepo/Drivers/TOSHIBA_Universal_PS3_$Architecture.zip"
 Write-Host ""
 Write-Host "Detected Operating System : $Architecture" -ForegroundColor Green
 
