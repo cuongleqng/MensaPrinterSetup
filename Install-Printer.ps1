@@ -148,9 +148,6 @@ if (-not (Get-PrinterDriver -Name $DriverName -ErrorAction SilentlyContinue))
     }
 }
 
-$Random = Get-Random -Minimum 1000 -Maximum 9999
-$PrinterName = "TOSHIBA_$Random"
-
 Add-Printer -Name $PrinterName -DriverName $DriverName -PortName $PortName
 
 Start-Process `
