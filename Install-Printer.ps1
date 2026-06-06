@@ -1,4 +1,4 @@
-$GithubRepo = "https://github.com/cuongleqng/MensaPrinterSetup/main"
+$GithubRepo = "https://raw.githubusercontent.com/cuongleqng/MensaPrinterSetup/main"
 if ([Environment]::Is64BitOperatingSystem)
 {
     $Architecture = "x64"
