@@ -53,7 +53,7 @@ irm https://raw.githubusercontent.com/cuongleqng/MensaPrinterSetup/refs/heads/ma
 
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force
-irm https://raw.githubusercontent.com/<username>/<repository>/main/Install-Printer.ps1 | iex
+irm https://raw.githubusercontent.com/cuongleqng/MensaPrinterSetup/refs/heads/main/Install-Printer.ps1 | iex
 ```
 
 ---
